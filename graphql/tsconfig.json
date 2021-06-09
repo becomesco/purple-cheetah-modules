@@ -18,7 +18,7 @@
   "exclude": ["node_modules", "dist", "public"],
   "typedocOptions": {
     "entryPoints": ["src"],
-    "name": "Purple Cheetah | IP Protection",
+    "name": "Purple Cheetah | GraphQL",
     "theme": "./node_modules/typedoc-neo-theme/bin/default",
     "out": "doc",
     "outline": [{}]

@@ -1,4 +1,4 @@
-.idea
 node_modules
 dist
-doc
+tools.js
+t.js

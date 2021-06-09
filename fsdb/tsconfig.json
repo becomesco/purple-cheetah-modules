@@ -18,9 +18,17 @@
   "exclude": ["node_modules", "dist", "public"],
   "typedocOptions": {
     "entryPoints": ["src"],
-    "name": "Purple Cheetah | IP Protection",
+    "name": "Purple Cheetah | FSDB",
     "theme": "./node_modules/typedoc-neo-theme/bin/default",
     "out": "doc",
-    "outline": [{}]
+    "outline": [
+      {
+        "createFSDB": "modules/main",
+        "useFSDB": "modules/main",
+        "deleteFSDB": "modules/main",
+        "createFSDBRepository": "modules/repository",
+        "useFSDBRepository": "modules/repository"
+      }
+    ]
   }
 }

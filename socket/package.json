@@ -1,0 +1,66 @@
+{
+  "name": "@becomes/purple-cheetah-mod-socket",
+  "version": "1.0.0",
+  "description": "Module for the Purple Cheetah which provides Web Socket support.",
+  "main": "./index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "bundle": "node tools.js --bundle",
+    "publish": "node tools.js --publish",
+    "link": "node tools.js --link",
+    "link:sudo": "node tools.js --link --sudo",
+    "unlink": "node tools.js --unlink",
+    "unlink:sudo": "node tools.js --unlink --sudo",
+    "pack": "node tools.js --pack",
+    "typedoc": "typedoc",
+    "test": "mocha -r ts-node/register test/integration/*.test.ts --recursive --exit",
+    "test:active": "mocha -r ts-node/register test/integration/*.active.test.ts --recursive --exit --bail",
+    "test:unit": "mocha -r ts-node/register test/unit/*.test.ts --recursive --exit",
+    "test:active:unit": "mocha -r ts-node/register test/unit/*.active.test.ts --recursive --exit",
+    "lint": "eslint . --ext .ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/becomesco/purple-cheetah-modules.git"
+  },
+  "keywords": [],
+  "author": "Branislav Vajagić",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/becomesco/purple-cheetah-modules/issues"
+  },
+  "homepage": "https://purple-cheetah.dev/modules/socket",
+  "dependencies": {
+    "socket.io": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@becomes/purple-cheetah": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@becomes/purple-cheetah": "^3.0.0",
+    "@types/chai": "^4.2.14",
+    "@types/express": "^4.17.12",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.6.2",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.27.0",
+    "fs-extra": "^10.0.0",
+    "mocha": "^8.4.0",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "ts-node": "^8.10.2",
+    "tsconfig-paths": "^3.9.0",
+    "typedoc-neo-theme": "^1.1.0",
+    "typescript": "^4.2.4"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src",
+      "test"
+    ],
+    "ext": "ts"
+  }
+}
