@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strict": true,
+    "target": "ES2020",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "importsNotUsedAsValues": "error"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "public"],
+  "typedocOptions": {
+    "entryPoints": ["src"],
+    "name": "Purple Cheetah | API",
+    "theme": "./node_modules/typedoc-neo-theme/bin/default",
+    "out": "doc",
+    "outline": [
+      {
+        "createPurpleCheetah": "modules/main",
+        "REST": {
+          "createController": "modules/rest_controller_main",
+          "createMiddleware": "modules/rest_middleware_main",
+          "createBodyParserMiddleware": "modules/rest_middleware_body_parser",
+          "createCorsMiddleware": "modules/rest_middleware_cors",
+          "createRequestLoggerMiddleware": "modules/rest_middleware_request_logger",
+          "createBodyValidationPreRequestHandler": "models/rest_rest_pre_request_handlers_body_validation",
+          "createJwtProtectionPreRequestHandler": "models/rest_rest_pre_request_handlers_jwt_protection",
+          "createHTTPError": "modules/rest_error",
+          "useRefreshTokenService": "module/rest_refresh_token_service"
+        },
+        "Security": {
+          "createAES256GCM": "modules/security_aes",
+
+        }
+      }
+    ]
+  }
+}
