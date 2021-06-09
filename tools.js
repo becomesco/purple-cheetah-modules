@@ -155,6 +155,15 @@ async function pack(mod) {
     cwd: path.join(process.cwd(), mod, "dist"),
     stdio: "inherit",
   });
+  const file = (
+    await util.promisify(fs.readdir)(path.join(__dirname, mod, "dist"))
+  ).find((e) => e.endsWith(".tgz"));
+  if (file) {
+    await fse.copy(
+      path.join(__dirname, mod, "dist", file),
+      path.join(__dirname, "dist", `${mod}.tgz`)
+    );
+  }
 }
 /**
  * @param {boolean} sudo

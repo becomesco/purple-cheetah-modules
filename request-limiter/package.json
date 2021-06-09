@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Module for the Purple Cheetah which provides request limiting based on header or IP address.",
   "main": "./index.js",
-  "types": "./types/index.d.ts",
+  "types": "./index.d.ts",
   "scripts": {
     "build": "tsc -p .",
     "bundle": "node tools.js --bundle",
