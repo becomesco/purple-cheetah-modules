@@ -1,4 +1,4 @@
-import type { HTTPError, Logger } from "@becomes/purple-cheetah/types";
+import type { HTTPError, Logger } from '@becomes/purple-cheetah/types';
 import type { GraphqlResponse } from './response';
 import type { GraphqlArgs } from './arg';
 
@@ -9,7 +9,7 @@ export enum GraphqlResolverType {
 }
 export type GraphqlResolverFunction<T, K> = (args: K) => Promise<T>;
 
-export interface GraphqlResolverConfig<ReturnType, DataType> {
+export interface GraphqlResolverConfig<SetupResult, DataType, ReturnType> {
   name: string;
   type: GraphqlResolverType;
   args?: GraphqlArgs;
@@ -18,17 +18,24 @@ export interface GraphqlResolverConfig<ReturnType, DataType> {
   };
   description?: string;
   includeErrorStack?: boolean;
+  setup?(data: { collectionName: string; resolverName: string }): SetupResult;
   unionTypeResolve?(input: ReturnType): ReturnType & { __typename: string };
   resolve(
-    data: DataType & {
-      __logger: Logger;
-      __errorHandler: HTTPError;
-      __resolverName: string;
-    },
+    data: DataType &
+      SetupResult & {
+        logger: Logger;
+        errorHandler: HTTPError;
+        resolverName: string;
+        collectionName: string;
+      },
   ): Promise<ReturnType>;
 }
 
 export interface GraphqlResolver<ReturnType> {
+  (collectionName: string): GraphqlResolverData<ReturnType>;
+}
+
+export interface GraphqlResolverData<ReturnType> {
   name: string;
   type: GraphqlResolverType;
   logger: Logger;

@@ -68,7 +68,7 @@ export function createGraphql(config: GraphqlConfig): Module {
       } = {};
 
       for (let i = 0; i < collections.length; i++) {
-        const collection = collections[i];
+        const collection = collections[i]();
         for (let j = 0; j < collection.objects.length; j++) {
           const obj = collection.objects[j];
           objectsSchema += createObjectSchema(obj);
