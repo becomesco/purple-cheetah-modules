@@ -1,4 +1,4 @@
 export * from './cached-repository';
-export * from './entiry';
+export * from './entity';
 export * from './main';
 export * from './repository';

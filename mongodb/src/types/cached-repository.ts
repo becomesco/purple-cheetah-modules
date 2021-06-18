@@ -1,10 +1,10 @@
-import type { MongoDBEntity } from './entiry';
+import type { MongoDBEntity } from './entity';
 import type { Schema, Model, Document } from 'mongoose';
 import type {
   MemCacheHandler,
-  MemCacheHandlerMethodsFunction
-} from "@becomes/purple-cheetah-mod-mem-cache";
-import type { Logger } from "@becomes/purple-cheetah/types";
+  MemCacheHandlerMethodsFunction,
+} from '@becomes/purple-cheetah-mod-mem-cache/types';
+import type { Logger } from '@becomes/purple-cheetah/types';
 
 /**
  * Configuration object for cached MongoDB repository.

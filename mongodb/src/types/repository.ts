@@ -1,6 +1,6 @@
 import type { FilterQuery, Schema, Document, Model } from 'mongoose';
 import type { Logger } from '@becomes/purple-cheetah/types';
-import type { MongoDBEntity } from './entiry';
+import type { MongoDBEntity } from './entity';
 
 /**
  * Configuration object for creating MongoDB repository.
