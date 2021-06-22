@@ -5,5 +5,5 @@ export interface SocketConnection<CustomProps> {
   createdAt: number;
   scope: string;
   socket: Socket;
-  props: CustomProps;
+  props?: CustomProps;
 }

@@ -3,9 +3,9 @@ import type { SocketConnection } from './connection';
 import type { IncomingMessage } from 'http';
 import type { SocketEventHandler } from './event-handler';
 
-export interface SocketConfig {
+export interface SocketConfig<CustomProps> {
   path: string;
-  onConnection<CustomProps>(socket: Soc): SocketConnection<CustomProps>;
+  onConnection(socket: Soc): SocketConnection<CustomProps>;
   allowConnection?(request: IncomingMessage): Promise<boolean>;
   verifyConnection?(socket: Soc): Promise<boolean>;
   eventHandlers?: SocketEventHandler[];

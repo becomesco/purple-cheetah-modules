@@ -12,7 +12,9 @@ import { useLogger } from '@becomes/purple-cheetah';
 const connections: { [id: string]: SocketConnection<unknown> } = {};
 let Socket: SocketType;
 
-export function createSocket(config: SocketConfig): Module {
+export function createSocket<CustomProps>(
+  config: SocketConfig<CustomProps>,
+): Module {
   let eventHandlers: SocketEventHandler[] = [];
   if (config.eventHandlers) {
     eventHandlers = config.eventHandlers;
