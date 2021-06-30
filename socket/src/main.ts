@@ -152,6 +152,7 @@ export function createSocket<CustomProps>(
           delete connections[connection.id];
         });
       });
+      moduleConfig.next();
     },
   };
 }

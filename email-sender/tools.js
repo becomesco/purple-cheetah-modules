@@ -25,7 +25,7 @@ async function spawn(cmd, args, options) {
         ? options
         : {
             stdio: 'inherit',
-          }
+          },
     );
     proc.on('close', (code) => {
       if (code !== 0) {
@@ -80,29 +80,21 @@ function parseArgs(rawArgs) {
     build: args['--build'] === '' || args['--build'] === 'true' || false,
     sudo: args['--sudo'] === '' || args['--sudo'] === 'true' || false,
     pack: args['--pack'] === '' || args['--pack'] === 'true' || false,
-    mod: args['--mod'] !== '' ? args['--mod'] : undefined,
   };
 }
 
-/**
- * @param {string} mod
- * @returns {Promise<void>}
- */
-async function bundle(mod) {
+async function bundle() {
   const tasks = new Tasks([
     {
       title: 'Remove old bundle.',
       task: async () => {
-        await fse.remove(path.join(__dirname, mod, 'dist'));
+        await fse.remove(path.join(__dirname, 'dist'));
       },
     },
     {
       title: 'Compile Typescript.',
       task: async () => {
-        await spawn('npm', ['run', 'build'], {
-          stdio: 'inherit',
-          cwd: path.join(__dirname, mod),
-        });
+        await spawn('npm', ['run', 'build']);
       },
     },
     {
@@ -111,16 +103,16 @@ async function bundle(mod) {
         const data = JSON.parse(
           (
             await util.promisify(fs.readFile)(
-              path.join(__dirname, mod, 'package.json')
+              path.join(__dirname, 'package.json'),
             )
-          ).toString()
+          ).toString(),
         );
         data.devDependencies = undefined;
         data.nodemonConfig = undefined;
         data.scripts = undefined;
         await util.promisify(fs.writeFile)(
-          path.join(__dirname, mod, 'dist', 'package.json'),
-          JSON.stringify(data, null, '  ')
+          path.join(__dirname, 'dist', 'package.json'),
+          JSON.stringify(data, null, '  '),
         );
       },
     },
@@ -128,8 +120,8 @@ async function bundle(mod) {
       title: 'Copy LICENSE',
       task: async () => {
         await fse.copy(
-          path.join(__dirname, 'LICENSE'),
-          path.join(__dirname, mod, 'dist', 'LICENSE')
+          path.join(__dirname, '..', 'LICENSE'),
+          path.join(__dirname, 'dist', 'LICENSE'),
         );
       },
     },
@@ -137,42 +129,27 @@ async function bundle(mod) {
       title: 'Copy README.md',
       task: async () => {
         await fse.copy(
-          path.join(__dirname, mod, 'README.md'),
-          path.join(__dirname, mod, 'dist', 'README.md')
+          path.join(__dirname, 'README.md'),
+          path.join(__dirname, 'dist', 'README.md'),
         );
       },
     },
   ]);
   await tasks.run();
 }
-
-/**
- * @param {string} mod
- * @returns {Promise<void>}
- */
-async function pack(mod) {
+async function pack() {
   await spawn('npm', ['pack'], {
-    cwd: path.join(process.cwd(), mod, 'dist'),
+    cwd: path.join(process.cwd(), 'dist'),
     stdio: 'inherit',
   });
-  const file = (
-    await util.promisify(fs.readdir)(path.join(__dirname, mod, 'dist'))
-  ).find((e) => e.endsWith('.tgz'));
-  if (file) {
-    await fse.copy(
-      path.join(__dirname, mod, 'dist', file),
-      path.join(__dirname, 'dist', `${mod}.tgz`)
-    );
-  }
 }
 /**
  * @param {boolean} sudo
- * @param {string} mod
  * @returns {Promise<void>}
  */
-async function link(sudo, mod) {
+async function link(sudo) {
   await spawn('npm', ['i'], {
-    cwd: path.join(process.cwd(), mod, 'dist'),
+    cwd: path.join(process.cwd(), 'dist'),
     stdio: 'inherit',
   });
   if (sudo) {
@@ -189,70 +166,48 @@ async function link(sudo, mod) {
 }
 /**
  * @param {boolean} sudo
- * @param {string} mod
  * @returns {Promise<void>}
  */
-async function unlink(sudo, mod) {
+async function unlink(sudo) {
   if (sudo) {
     await spawn('sudo', ['npm', 'link'], {
-      cwd: path.join(process.cwd(), mod, 'dist'),
+      cwd: path.join(process.cwd(), 'dist'),
       stdio: 'inherit',
     });
   } else {
     await spawn('npm', ['unlink'], {
-      cwd: path.join(process.cwd(), mod, 'dist'),
+      cwd: path.join(process.cwd(), 'dist'),
       stdio: 'inherit',
     });
   }
 }
-
-/**
- * @param {string} mod
- * @returns {Promise<void>}
- */
-async function publish(mod) {
+async function publish() {
   if (
     await util.promisify(fs.exists)(
-      path.join(__dirname, mod, 'dist', 'node_modules')
+      path.join(__dirname, 'dist', 'node_modules'),
     )
   ) {
     throw new Error(
-      `Please remove "${path.join(__dirname, mod, 'dist', 'node_modules')}"`
+      `Please remove "${path.join(__dirname, 'dist', 'node_modules')}"`,
     );
   }
   await spawn('npm', ['publish', '--access=private'], {
-    cwd: path.join(process.cwd(), mod, 'dist'),
+    cwd: path.join(process.cwd(), 'dist'),
     stdio: 'inherit',
   });
 }
 async function main() {
   const options = parseArgs(process.argv);
-  let mods = [
-    'email-sender',
-    'fsdb',
-    'graphql',
-    'ip-protection',
-    'jwt',
-    'mem-cache',
-    'mongodb',
-    'socket',
-  ];
-  if (options.mod) {
-    mods = mods.filter((e) => e === options.mod);
-  }
-  for (let i = 0; i < mods.length; i++) {
-    const mod = mods[i];
-    if (options.bundle === true) {
-      await bundle(mod);
-    } else if (options.link === true) {
-      await link(options.sudo, mod);
-    } else if (options.unlink === true) {
-      await unlink(options.sudo, mod);
-    } else if (options.publish === true) {
-      await publish(mod);
-    } else if (options.pack === true) {
-      await pack(mod);
-    }
+  if (options.bundle === true) {
+    await bundle();
+  } else if (options.link === true) {
+    await link(options.sudo);
+  } else if (options.unlink === true) {
+    await unlink(options.sudo);
+  } else if (options.publish === true) {
+    await publish();
+  } else if (options.pack === true) {
+    await pack();
   }
 }
 main().catch((error) => {
