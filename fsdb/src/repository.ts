@@ -111,7 +111,7 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
         logger.error('add', e);
         throw e;
       }
-      fsdb.set(entity);
+      fsdb.set(JSON.parse(JSON.stringify(entity)));
       return entity;
     },
     async addMany(entities) {
@@ -138,7 +138,7 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
         logger.error('update', e);
         throw e;
       }
-      fsdb.set(entity);
+      fsdb.set(JSON.parse(JSON.stringify(entity)));
       return entity;
     },
     async updateMany(query, update) {
@@ -158,7 +158,7 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
             logger.error('updateMany', e);
             throw e;
           }
-          fsdb.set(entity);
+          fsdb.set(JSON.parse(JSON.stringify(entity)));
           output.push(entity);
         }
       }
