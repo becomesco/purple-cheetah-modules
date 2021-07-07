@@ -228,7 +228,7 @@ async function publish(mod) {
 async function main() {
   const options = parseArgs(process.argv);
   let mods = [
-    'email-sender',
+    // 'email-sender',
     'fsdb',
     'graphql',
     'ip-protection',
