@@ -27,9 +27,7 @@ export interface FSDB {
     set(entity: T): void;
     remove(id: string): void;
   };
-  _setCache(cache: {
-    [collection: string]: FSDBRepository<FSDBEntity, unknown>;
-  }): void;
+  _setCache(cache: FSDBCache): void;
   repo: {
     create<T extends FSDBEntity, K>(
       collection: string,

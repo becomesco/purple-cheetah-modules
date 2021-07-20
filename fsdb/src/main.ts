@@ -19,7 +19,7 @@ const logger = useLogger({
   name: 'FSDB',
 });
 const fs = useFS();
-let repos: {
+const repos: {
   [collection: string]: FSDBRepository<FSDBEntity, unknown>;
 } = {};
 const fsdb: FSDB = {
@@ -29,18 +29,27 @@ const fsdb: FSDB = {
     }
     return {
       get() {
+        if (!cache[collection]) {
+          cache[collection] = {};
+        }
         return cache[collection] as FSDBCacheCollection<T>;
       },
       set(entity) {
+        if (!cache[collection]) {
+          cache[collection] = {};
+        }
         cache[collection][entity._id] = entity;
       },
       remove(id) {
+        if (!cache[collection]) {
+          cache[collection] = {};
+        }
         delete cache[collection][id];
       },
     };
   },
   _setCache(c) {
-    repos = JSON.parse(JSON.stringify(c));
+    cache = JSON.parse(JSON.stringify(c));
   },
   repo: {
     create<T extends FSDBEntity, K>(
