@@ -5,7 +5,7 @@ import type {
   MongoDBEntity,
 } from './types';
 import { useLogger } from '@becomes/purple-cheetah';
-import { createMemCacheHandler } from '@becomes/purple-cheetah-mod-mem-cache/handler';
+import { createMemCacheHandler } from '@becomes/purple-cheetah-mod-mem-cache';
 
 export function createMongoDBCachedRepository<
   Entity extends MongoDBEntity,

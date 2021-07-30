@@ -1,6 +1,6 @@
 {
   "name": "@becomes/purple-cheetah-mod-mongodb",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Module for the Purple Cheetah which provides MongoDB interface.",
   "main": "./index.js",
   "types": "./index.d.ts",
@@ -30,17 +30,17 @@
   "bugs": {
     "url": "https://github.com/becomesco/purple-cheetah-modules/issues"
   },
-  "homepage": "https://purple-cheetah.dev/modules/mongodb",
+  "homepage": "https://github.com/becomesco/purple-cheetah-modules",
   "dependencies": {
     "mongoose": "^5.12.13"
   },
   "peerDependencies": {
-    "@becomes/purple-cheetah": ">=3.0.0",
-    "@becomes/purple-cheetah-mod-mem-cache": ">=1.0.0"
+    "@becomes/purple-cheetah": ">=3.1.0",
+    "@becomes/purple-cheetah-mod-mem-cache": ">=1.1.0"
   },
   "devDependencies": {
-    "@becomes/purple-cheetah": "^3.0.0",
-    "@becomes/purple-cheetah-mod-mem-cache": "file:mem-cache.tgz",
+    "@becomes/purple-cheetah": "^3.1.1",
+    "@becomes/purple-cheetah-mod-mem-cache": "^1.1.0",
     "@types/chai": "^4.2.14",
     "@types/express": "^4.17.12",
     "@types/mocha": "^8.2.2",
