@@ -191,7 +191,7 @@ async function publish() {
       `Please remove "${path.join(__dirname, 'dist', 'node_modules')}"`,
     );
   }
-  await spawn('npm', ['publish', '--access=private'], {
+  await spawn('npm', ['publish', '--access=public'], {
     cwd: path.join(process.cwd(), 'dist'),
     stdio: 'inherit',
   });
