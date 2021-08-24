@@ -91,6 +91,7 @@ export function createGraphql(config: GraphqlConfig): Module {
           unionsSchema += `union ${union.name} = ${union.types.join(' | ')}
           
           `;
+          objectsSchema += createObjectSchema(union.wrapperObject);
         }
         for (let j = 0; j < collection.inputs.length; j++) {
           const input = collection.inputs[j];
