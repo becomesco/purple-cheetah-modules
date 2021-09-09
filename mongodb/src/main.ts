@@ -10,7 +10,7 @@ const mongoDB: MongoDB = {
   },
 };
 
-export function useMongoDB() {
+export function useMongoDB(): MongoDB {
   return mongoDB;
 }
 export function createMongoDB(config: MongoDBConfig): Module {

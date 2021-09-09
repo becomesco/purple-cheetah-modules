@@ -1,7 +1,13 @@
 import { useObjectUtility } from '@becomes/purple-cheetah';
 import { ObjectUtilityError } from '@becomes/purple-cheetah/types';
-import type { JWT, JWTEncoding, JWTHeader, JWTPayload } from './types';
-import { JWTHeaderSchema, JWTPayloadSchema } from './types';
+import {
+  JWT,
+  JWTEncoding,
+  JWTHeader,
+  JWTPayload,
+  JWTHeaderSchema,
+  JWTPayloadSchema,
+} from './types';
 
 const objectUtil = useObjectUtility();
 const encoding: JWTEncoding = {

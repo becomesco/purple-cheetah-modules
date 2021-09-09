@@ -17,7 +17,11 @@ export function createMongoDBCachedRepository<
   schema,
   cacheMethods,
   methods,
-}: MongoDBCachedRepositoryConfig<Entity, Methods, CacheMethods>) {
+}: MongoDBCachedRepositoryConfig<
+  Entity,
+  Methods,
+  CacheMethods
+>): MongoDBCachedRepository<Entity, Methods> {
   const logger = useLogger({ name });
 
   const cacheHandler = createMemCacheHandler<Entity, CacheMethods>({
@@ -98,7 +102,7 @@ export function createMongoDBCachedRepository<
           entity as UpdateQuery<unknown>,
         )
         .exec();
-      cacheHandler.set(entity._id.toHexString(), entity);
+      cacheHandler.set(`${entity._id}`, entity);
       return entity;
     },
     async updateMany(entities) {
