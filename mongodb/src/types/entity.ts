@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
  * must have those properties.
  */
 export interface MongoDBEntity {
-  _id: Types.ObjectId;
+  _id: string | Types.ObjectId;
   createdAt: number;
   updatedAt: number;
 }
