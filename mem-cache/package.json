@@ -1,6 +1,6 @@
 {
   "name": "@becomes/purple-cheetah-mod-mem-cache",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Module for the Purple Cheetah which provides local in-memory caching.",
   "main": "./index.js",
   "types": "./index.d.ts",
