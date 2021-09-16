@@ -40,7 +40,7 @@ export function createMongoDBCachedRepository<
       const entities = await intf.find().exec();
       for (let i = 0; i < entities.length; i++) {
         const entity = entities[i];
-        cacheHandler.set(entity._id.toHexString(), entity);
+        cacheHandler.set(`${entity._id}`, entity);
       }
       findAllLath = true;
       return entities;
@@ -54,7 +54,7 @@ export function createMongoDBCachedRepository<
         .findOne({ _id: id } as FilterQuery<unknown>)
         .exec();
       if (entity) {
-        cacheHandler.set(entity._id.toHexString(), entity);
+        cacheHandler.set(`${entity._id}`, entity);
       }
       return entity;
     },
@@ -68,7 +68,7 @@ export function createMongoDBCachedRepository<
         .exec();
       for (let i = 0; i < entities.length; i++) {
         const entity = entities[i];
-        cacheHandler.set(entity._id.toHexString(), entity);
+        cacheHandler.set(`${entity._id}`, entity);
       }
       return entities;
     },
@@ -80,7 +80,7 @@ export function createMongoDBCachedRepository<
       entity.updatedAt = Date.now();
       const ent = await intf.create(entity);
       if (ent) {
-        cacheHandler.set(ent._id.toHexString(), ent);
+        cacheHandler.set(`${ent._id}`, ent);
       }
       return ent;
     },
