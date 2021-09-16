@@ -32,14 +32,14 @@
   },
   "homepage": "https://github.com/becomesco/purple-cheetah-modules",
   "dependencies": {
-    "mongoose": "^5.12.13"
   },
   "peerDependencies": {
     "@becomes/purple-cheetah": ">=3.1.0",
+    "mongoose": ">=5.12.13",
     "@becomes/purple-cheetah-mod-mem-cache": ">=1.1.0"
   },
   "devDependencies": {
-    "@becomes/purple-cheetah": "^3.1.1",
+    "@becomes/purple-cheetah": "^3.1.5",
     "@becomes/purple-cheetah-mod-mem-cache": "^1.1.0",
     "@types/chai": "^4.2.14",
     "@types/express": "^4.17.12",
