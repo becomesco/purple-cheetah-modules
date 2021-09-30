@@ -76,21 +76,21 @@ export function createMongoDBRepository<Entity extends MongoDBEntity, Methods>({
       const result = await intf
         .deleteOne({ _id: id } as FilterQuery<unknown>)
         .exec();
-      return result.ok === 1;
+      return result.deletedCount === 1;
     },
     async deleteAllById(ids) {
       const result = await intf
         .deleteMany({ _id: { $in: ids } } as FilterQuery<unknown>)
         .exec();
-      return result.ok === 1;
+      return result.deletedCount === 1;
     },
     async deleteOne(query) {
       const result = await intf.deleteOne(query).exec();
-      return result.ok === 1;
+      return result.deletedCount === 1;
     },
     async deleteMany(query) {
       const result = await intf.deleteMany(query).exec();
-      return result.ok === 1;
+      return result.deletedCount === 1;
     },
     async count() {
       return await intf.countDocuments().exec();

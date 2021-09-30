@@ -32,7 +32,7 @@ export interface MongoDBConfig {
     db: {
       name: string;
       cluster: string;
-      readWrite: boolean;
+      readWrite?: boolean;
     };
   };
 }

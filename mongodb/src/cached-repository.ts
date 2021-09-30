@@ -116,7 +116,7 @@ export function createMongoDBCachedRepository<
       const result = await intf
         .deleteOne({ _id: id } as FilterQuery<unknown>)
         .exec();
-      const ok = result.ok === 1;
+      const ok = result.deletedCount === 1;
       if (ok) {
         cacheHandler.remove(id);
       }
@@ -126,13 +126,10 @@ export function createMongoDBCachedRepository<
       const result = await intf
         .deleteMany({ _id: { $in: ids } } as FilterQuery<unknown>)
         .exec();
-      const ok = result.ok === 1;
-      if (ok) {
-        for (let i = 0; i < ids.length; i++) {
-          cacheHandler.remove(ids[i]);
-        }
+      for (let i = 0; i < ids.length; i++) {
+        cacheHandler.remove(ids[i]);
       }
-      return result.ok === 1;
+      return result.deletedCount === ids.length;
     },
     async count() {
       return await intf.countDocuments().exec();

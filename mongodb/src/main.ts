@@ -31,15 +31,12 @@ export function createMongoDB(config: MongoDBConfig): Module {
         }
         url = url + '/' + config.selfHosted.db.name;
         try {
-          await mongoose.connect(url, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-          });
+          await mongoose.connect(url);
           logger.info('', 'Successful connection.');
           connected = true;
         } catch (error) {
           connected = false;
-          return error;
+          return error as Error;
         }
       } else if (config.atlas) {
         const url: string =
@@ -50,20 +47,17 @@ export function createMongoDB(config: MongoDBConfig): Module {
           '@' +
           config.atlas.db.cluster +
           '/' +
-          config.atlas.db.name +
-          '?readWrite=' +
-          config.atlas.db.readWrite +
-          '&w=majority';
+          config.atlas.db.name;
+        // '?readWrite=' +
+        // config.atlas.db.readWrite +
+        // '&w=majority';
         try {
-          await mongoose.connect(url, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-          });
+          await mongoose.connect(url);
           logger.info('', 'Successful connection.');
           connected = true;
         } catch (error) {
           connected = false;
-          return error;
+          return error as Error;
         }
       } else {
         return Error('Invalid configuration.');
