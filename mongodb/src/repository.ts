@@ -1,20 +1,20 @@
 import { model, Document, FilterQuery, Types, UpdateQuery } from 'mongoose';
-import { useLogger } from "@becomes/purple-cheetah";
+import { useLogger } from '@becomes/purple-cheetah';
 import type {
   MongoDBEntity,
   MongoDBRepository,
-  MongoDBRepositoryConfig
-} from "./types";
+  MongoDBRepositoryConfig,
+} from './types';
 
-export function createMongoDBRepository<
-  Entity extends MongoDBEntity,
-  Methods,
->({
+export function createMongoDBRepository<Entity extends MongoDBEntity, Methods>({
   name,
   collection,
   schema,
   methods,
-}: MongoDBRepositoryConfig<Entity, Methods>) {
+}: MongoDBRepositoryConfig<Entity, Methods>): MongoDBRepository<
+  Entity,
+  Methods
+> {
   const logger = useLogger({ name });
 
   const intf = model<Entity & Document>(collection, schema);
@@ -76,21 +76,21 @@ export function createMongoDBRepository<
       const result = await intf
         .deleteOne({ _id: id } as FilterQuery<unknown>)
         .exec();
-      return result.ok === 1;
+      return result.deletedCount === 1;
     },
     async deleteAllById(ids) {
       const result = await intf
         .deleteMany({ _id: { $in: ids } } as FilterQuery<unknown>)
         .exec();
-      return result.ok === 1;
+      return result.deletedCount === 1;
     },
     async deleteOne(query) {
       const result = await intf.deleteOne(query).exec();
-      return result.ok === 1;
+      return result.deletedCount === 1;
     },
     async deleteMany(query) {
       const result = await intf.deleteMany(query).exec();
-      return result.ok === 1;
+      return result.deletedCount === 1;
     },
     async count() {
       return await intf.countDocuments().exec();

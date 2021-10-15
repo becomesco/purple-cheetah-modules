@@ -11,6 +11,7 @@
     "target": "ES2020",
     "outDir": "./dist",
     "baseUrl": "./",
+    "skipLibCheck": true,
     "incremental": true,
     "importsNotUsedAsValues": "error"
   },

@@ -260,8 +260,9 @@ export function createGraphql(config: GraphqlConfig): Module {
           ],
         });
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error(fullSchema);
-        moduleConfig.next(e);
+        moduleConfig.next(e as Error);
       }
     },
   };

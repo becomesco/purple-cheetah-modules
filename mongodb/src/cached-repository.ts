@@ -17,7 +17,11 @@ export function createMongoDBCachedRepository<
   schema,
   cacheMethods,
   methods,
-}: MongoDBCachedRepositoryConfig<Entity, Methods, CacheMethods>) {
+}: MongoDBCachedRepositoryConfig<
+  Entity,
+  Methods,
+  CacheMethods
+>): MongoDBCachedRepository<Entity, Methods> {
   const logger = useLogger({ name });
 
   const cacheHandler = createMemCacheHandler<Entity, CacheMethods>({
@@ -36,7 +40,7 @@ export function createMongoDBCachedRepository<
       const entities = await intf.find().exec();
       for (let i = 0; i < entities.length; i++) {
         const entity = entities[i];
-        cacheHandler.set(entity._id.toHexString(), entity);
+        cacheHandler.set(`${entity._id}`, entity);
       }
       findAllLath = true;
       return entities;
@@ -50,7 +54,7 @@ export function createMongoDBCachedRepository<
         .findOne({ _id: id } as FilterQuery<unknown>)
         .exec();
       if (entity) {
-        cacheHandler.set(entity._id.toHexString(), entity);
+        cacheHandler.set(`${entity._id}`, entity);
       }
       return entity;
     },
@@ -64,7 +68,7 @@ export function createMongoDBCachedRepository<
         .exec();
       for (let i = 0; i < entities.length; i++) {
         const entity = entities[i];
-        cacheHandler.set(entity._id.toHexString(), entity);
+        cacheHandler.set(`${entity._id}`, entity);
       }
       return entities;
     },
@@ -76,7 +80,7 @@ export function createMongoDBCachedRepository<
       entity.updatedAt = Date.now();
       const ent = await intf.create(entity);
       if (ent) {
-        cacheHandler.set(ent._id.toHexString(), ent);
+        cacheHandler.set(`${ent._id}`, ent);
       }
       return ent;
     },
@@ -98,7 +102,7 @@ export function createMongoDBCachedRepository<
           entity as UpdateQuery<unknown>,
         )
         .exec();
-      cacheHandler.set(entity._id.toHexString(), entity);
+      cacheHandler.set(`${entity._id}`, entity);
       return entity;
     },
     async updateMany(entities) {
@@ -112,7 +116,7 @@ export function createMongoDBCachedRepository<
       const result = await intf
         .deleteOne({ _id: id } as FilterQuery<unknown>)
         .exec();
-      const ok = result.ok === 1;
+      const ok = result.deletedCount === 1;
       if (ok) {
         cacheHandler.remove(id);
       }
@@ -122,13 +126,10 @@ export function createMongoDBCachedRepository<
       const result = await intf
         .deleteMany({ _id: { $in: ids } } as FilterQuery<unknown>)
         .exec();
-      const ok = result.ok === 1;
-      if (ok) {
-        for (let i = 0; i < ids.length; i++) {
-          cacheHandler.remove(ids[i]);
-        }
+      for (let i = 0; i < ids.length; i++) {
+        cacheHandler.remove(ids[i]);
       }
-      return result.ok === 1;
+      return result.deletedCount === ids.length;
     },
     async count() {
       return await intf.countDocuments().exec();

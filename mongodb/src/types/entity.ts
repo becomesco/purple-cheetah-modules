@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
  * must have those properties.
  */
 export interface MongoDBEntity {
-  _id: Types.ObjectId;
+  _id: string | Types.ObjectId;
   createdAt: number;
   updatedAt: number;
 }
@@ -17,6 +17,25 @@ export interface MongoDBEntity {
 export const MongoDBEntitySchema = {
   _id: {
     type: Types.ObjectId,
+    required: true,
+  },
+  createdAt: {
+    type: Number,
+    required: true,
+  },
+  updatedAt: {
+    type: Number,
+    required: true,
+  },
+};
+
+/**
+ * Default MongoDB entity schema with String ID property.
+ * Useful for defining schemas for custom entities.
+ */
+export const MongoDBEntitySchemaString = {
+  _id: {
+    type: String,
     required: true,
   },
   createdAt: {

@@ -139,6 +139,6 @@ export function createFSDB(config: FSDBConfig): Module {
   };
 }
 
-export function deleteFSDB() {
+export function deleteFSDB(): void {
   clearInterval(saveInterval);
 }

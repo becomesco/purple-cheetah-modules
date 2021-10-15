@@ -19,7 +19,7 @@ export function useFSDBRepository<T extends FSDBEntity, K>(
    * Name of the collection to which target repository is connected.
    */
   collection: string,
-) {
+): FSDBRepository<T, K> | null {
   return useFSDB().repo.use<T, K>(collection);
 }
 

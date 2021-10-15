@@ -73,20 +73,21 @@ export function createGraphqlResolver<SetupResult, DataType, ReturnType>(
               error: {
                 status: err.status,
                 message:
-                  err.message && err.message.message
-                    ? error.message.message
-                    : '',
-                stack: config.includeErrorStack ? error.stack : undefined,
+                  err.message && err.message.message ? err.message.message : '',
+                stack: config.includeErrorStack ? err.stack : undefined,
               },
             };
           }
+          const err = error as Error;
           return {
             error: {
               status: 500,
-              message: error.message,
+              message: err.message,
               stack:
-                error.stack && config.includeErrorStack
-                  ? error.stack.split('\n')
+                err.stack && config.includeErrorStack
+                  ? err.stack
+                    ? err.stack.split('\n')
+                    : undefined
                   : undefined,
             },
           };

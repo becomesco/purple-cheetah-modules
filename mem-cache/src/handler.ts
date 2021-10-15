@@ -94,8 +94,8 @@ export function createMemCacheHandler<Item, Methods>(
       } else {
         type = 'add';
       }
-      cache[id] = { ...item };
-      triggerEvent(type, { ...item });
+      cache[id] = JSON.parse(JSON.stringify(item));
+      triggerEvent(type, JSON.parse(JSON.stringify(item)));
     },
     remove(id) {
       if (cache[id]) {
