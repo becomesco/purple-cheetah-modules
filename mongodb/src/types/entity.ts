@@ -28,3 +28,22 @@ export const MongoDBEntitySchema = {
     required: true,
   },
 };
+
+/**
+ * Default MongoDB entity schema with String ID property.
+ * Useful for defining schemas for custom entities.
+ */
+export const MongoDBEntitySchemaString = {
+  _id: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Number,
+    required: true,
+  },
+  updatedAt: {
+    type: Number,
+    required: true,
+  },
+};
