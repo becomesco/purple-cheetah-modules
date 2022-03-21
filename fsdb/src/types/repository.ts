@@ -50,6 +50,7 @@ export interface FSDBRepositoryConfig<Entity extends FSDBEntity, Methods> {
  * FSDB repository methods.
  */
 export interface FSDBRepository<Entity extends FSDBEntity, Methods> {
+  collection: string;
   /**
    * Custom repository methods.
    */

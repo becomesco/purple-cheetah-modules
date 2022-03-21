@@ -59,6 +59,7 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
   }
 
   const self: FSDBRepository<T, K> = {
+    collection,
     methods: undefined as never,
     async findBy(query) {
       const entities = getAllEntities();
