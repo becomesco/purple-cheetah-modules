@@ -73,6 +73,7 @@ export interface MongoDBCachedRepository<
   Entity extends MongoDBEntity,
   Methods,
 > {
+  collection: string;
   /**
    * Custom repository methods.
    */

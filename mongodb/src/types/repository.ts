@@ -57,6 +57,7 @@ export interface MongoDBRepositoryConfig<
  * MongoDB repository methods.
  */
 export interface MongoDBRepository<Entity extends MongoDBEntity, Methods> {
+  collection: string;
   /**
    * Custom repository methods.
    */

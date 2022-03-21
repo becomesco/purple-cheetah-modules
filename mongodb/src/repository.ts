@@ -19,6 +19,7 @@ export function createMongoDBRepository<Entity extends MongoDBEntity, Methods>({
 
   const intf = model<Entity & Document>(collection, schema);
   const self: MongoDBRepository<Entity, Methods> = {
+    collection,
     methods: undefined as never,
     async findBy(query) {
       return intf.findOne(query).exec();

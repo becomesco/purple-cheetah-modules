@@ -32,6 +32,7 @@ export function createMongoDBCachedRepository<
 
   const intf = model<Entity & Document>(collection, schema);
   const self: MongoDBCachedRepository<Entity, Methods> = {
+    collection,
     methods: undefined as never,
     async findAll() {
       if (findAllLath) {
