@@ -34,10 +34,10 @@
   "homepage": "https://github.com/becomesco/purple-cheetah-modules/fsdb",
   "dependencies": {},
   "peerDependencies": {
-    "@becomes/purple-cheetah": ">=3.0.0"
+    "@becomes/purple-cheetah": ">=3.5.2"
   },
   "devDependencies": {
-    "@becomes/purple-cheetah": "^3.0.0",
+    "@becomes/purple-cheetah": "^3.5.2",
     "@types/chai": "^4.2.14",
     "@types/express": "^4.17.12",
     "@types/mocha": "^8.2.2",
