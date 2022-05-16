@@ -14,6 +14,7 @@ import type { Module } from '@becomes/purple-cheetah/types';
 let output = path.join(process.cwd(), '.fsdb');
 let saveInterval: NodeJS.Timeout;
 let cache: FSDBCache = {};
+let prettyOutput: string | undefined = undefined;
 const cacheHash: {
   [collection: string]: string;
 } = {};
@@ -76,7 +77,7 @@ const fsdb: FSDB = {
 async function save(col?: string): Promise<void> {
   if (col && cache[col]) {
     const collection = col;
-    const cacheString = JSON.stringify(cache[collection]);
+    const cacheString = JSON.stringify(cache[collection], null, prettyOutput);
     const hash = crypto.createHash('sha256').update(cacheString).digest('hex');
     if (hash !== cacheHash[collection]) {
       await fs.save([output, collection + '.json'], cacheString);
@@ -84,7 +85,7 @@ async function save(col?: string): Promise<void> {
     }
   } else {
     for (const collection in cache) {
-      const cacheString = JSON.stringify(cache[collection]);
+      const cacheString = JSON.stringify(cache[collection], null, prettyOutput);
       const hash = crypto
         .createHash('sha256')
         .update(cacheString)
@@ -143,6 +144,9 @@ export function createFSDB(config: FSDBConfig): Module {
   }
   if (!config.saveInterval) {
     config.saveInterval = 10000;
+  }
+  if (config.prettyOutput) {
+    prettyOutput = '  ';
   }
 
   return {
