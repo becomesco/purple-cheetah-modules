@@ -99,12 +99,16 @@ async function save(col?: string): Promise<void> {
 }
 
 async function init(config: FSDBConfig): Promise<void> {
-  const dbFiles = (await fs.readdir(output)).filter((e) => e.endsWith('.json'));
-  for (let i = 0; i < dbFiles.length; i++) {
-    const dbFile = dbFiles[i];
-    cache[dbFile.replace('.json', '')] = JSON.parse(
-      await fs.readString([output, dbFile]),
+  if (await fs.exist(output)) {
+    const dbFiles = (await fs.readdir(output)).filter((e) =>
+      e.endsWith('.json'),
     );
+    for (let i = 0; i < dbFiles.length; i++) {
+      const dbFile = dbFiles[i];
+      cache[dbFile.replace('.json', '')] = JSON.parse(
+        await fs.readString([output, dbFile]),
+      );
+    }
   }
   for (const collection in cache) {
     if (!cache[collection]) {
