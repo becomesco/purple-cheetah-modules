@@ -43,6 +43,8 @@ export interface FSDBRepositoryConfig<Entity extends FSDBEntity, Methods> {
      * Repository logger.
      */
     logger: Logger;
+    throwError(place: string, message: unknown): void;
+    checkSchema(entity: Entity): void;
   }): Methods;
 }
 

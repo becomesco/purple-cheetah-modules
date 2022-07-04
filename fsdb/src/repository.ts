@@ -228,6 +228,8 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
       schema,
       repo: self,
       logger,
+      checkSchema,
+      throwError,
     });
   }
   useFSDB().repo.create(collection, self);
