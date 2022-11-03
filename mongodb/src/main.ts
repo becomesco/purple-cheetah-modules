@@ -19,13 +19,18 @@ export function createMongoDB(config: MongoDBConfig): Module {
   async function openConnection(): Promise<void | Error> {
     if (mongoose.connection.readyState === 0) {
       if (config.selfHosted) {
-        let url: string =
-          'mongodb://' +
-          config.selfHosted.user.name +
-          ':' +
-          config.selfHosted.user.password +
-          '@' +
-          config.selfHosted.db.host;
+        let url = `mongodb://${
+          config.selfHosted.user
+            ? `${config.selfHosted.user.name}:${config.selfHosted.user.password}@`
+            : ''
+        }${config.selfHosted.db.host}`;
+        // let url: string =
+        //   'mongodb://' +
+        //   `${
+        //     config.selfHosted.user.name + ':' + config.selfHosted.user.password
+        //   }` +
+        //   '@' +
+        //   config.selfHosted.db.host;
         if (config.selfHosted.db.port) {
           url = url + ':' + config.selfHosted.db.port;
         }
