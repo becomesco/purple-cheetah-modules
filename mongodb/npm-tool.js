@@ -14,6 +14,7 @@ module.exports = createConfig({
           await fs.copy(['dist', 'src'], 'dist');
           await fs.deleteDir(['dist', 'src']);
           await fs.deleteDir(['dist', 'test']);
+          await fs.deleteFile(['dist', 'tsconfig.tsbuildinfo']);
         },
       },
     ],
