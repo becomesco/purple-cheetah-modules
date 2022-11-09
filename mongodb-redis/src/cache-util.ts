@@ -31,17 +31,19 @@ export class MongoDBRedisCacheUtil<
 
   async fromResource(
     indexingKey: string,
-    handler: () => Promise<Entity>,
+    handler: () => Promise<Entity | null>,
     type?: RedisIndexingHelperKeyType,
-  ): Promise<Entity> {
+  ): Promise<Entity | null> {
     const cacheHit = await this.redisRepo.findOneByIndexingKey(indexingKey);
     if (cacheHit) {
       return cacheHit;
     }
     const result = await handler();
-    await this.redisRepo.indexingHelper.addIds(indexingKey, result._id);
-    await this.redisRepo.indexingHelper.addQueryKey(indexingKey, type);
-    await this.redisRepo.set(JSON.parse(JSON.stringify(result)));
+    if (result) {
+      await this.redisRepo.indexingHelper.addIds(indexingKey, result._id);
+      await this.redisRepo.indexingHelper.addQueryKey(indexingKey, type);
+      await this.redisRepo.set(JSON.parse(JSON.stringify(result)));
+    }
     return result;
   }
 }
