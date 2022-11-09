@@ -1,0 +1,31 @@
+GET http://localhost:1280/todo/all
+
+###
+
+POST http://localhost:1280/todo
+content-type: application/json
+
+{
+  "done": false,
+  "description": "This is task 2"
+}
+
+###
+
+
+PUT http://localhost:1280/todo
+content-type: application/json
+
+{
+  "_id": "636bb47bd822520076e8ebd7",
+  "done": true,
+  "description": "This is task 7"
+}
+
+###
+
+GET http://localhost:1280/todo/search/task 7
+
+###
+
+DELETE http://localhost:1280/todo/636bb47bd822520076e8ebd7

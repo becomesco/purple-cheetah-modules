@@ -33,7 +33,9 @@ export function createRedisRepository<
   }
 
   async function addIndex(id: string) {
-    await redis.client.lPush(indexesCollection, id);
+    if (id) {
+      await redis.client.lPush(indexesCollection, id);
+    }
   }
 
   async function removeIndex(id: string) {
@@ -47,6 +49,7 @@ export function createRedisRepository<
     collection: config.collection,
     schema: config.schema,
     methods: {} as never,
+    indexingHelper: null as never,
 
     async findById(id) {
       const result = await redis.client.hGetAll(`${config.collection}:${id}`);
@@ -91,12 +94,11 @@ export function createRedisRepository<
       return output;
     },
 
-    async findOne(indexingKey, query) {
-      const indexes = await indexingHelper.getIndexes(indexingKey);
-      if (indexes.length > 0) {
-        return await repo.findById(indexes[0]);
+    async findOne(indexingKey, query, type) {
+      const result = await repo.findOneByIndexingKey(indexingKey, type);
+      if (result) {
+        return result;
       }
-
       const allEntityIndexes = await redis.client.lRange(
         indexesCollection,
         0,
@@ -108,6 +110,8 @@ export function createRedisRepository<
         if (entity) {
           if (query(entity)) {
             await indexingHelper.addIds(indexingKey, entity._id);
+            await indexingHelper.setQueryState(indexingKey, true);
+            await indexingHelper.addQueryKey(indexingKey);
             return entity;
           }
         } else {
@@ -117,12 +121,11 @@ export function createRedisRepository<
       return null;
     },
 
-    async find(indexingKey, query) {
-      const indexes = await indexingHelper.getIndexes(indexingKey);
-      if (indexes.length > 0) {
-        return await repo.findAllById(indexes);
+    async find(indexingKey, query, type) {
+      const result = await repo.findByIndexingKey(indexingKey, type);
+      if (result) {
+        return result;
       }
-
       const allEntityIndexes = await redis.client.lRange(
         indexesCollection,
         0,
@@ -144,7 +147,35 @@ export function createRedisRepository<
         indexingKey,
         output.map((e) => e._id),
       );
+      await indexingHelper.setQueryState(indexingKey, true);
+      await indexingHelper.addQueryKey(indexingKey);
       return output;
+    },
+
+    async findByIndexingKey(indexingKey) {
+      if (!(await indexingHelper.getQueryState(indexingKey))) {
+        return null;
+      }
+      const output: Model[] = [];
+      const indexes = await indexingHelper.getIndexes(indexingKey);
+      for (let i = 0; i < indexes.length; i++) {
+        const id = indexes[i];
+        const entity = await repo.findById(id);
+        if (entity) {
+          output.push(entity);
+        } else {
+          removeIndex(id);
+        }
+      }
+      return output;
+    },
+
+    async findOneByIndexingKey(indexingKey) {
+      if (!(await indexingHelper.getQueryState(indexingKey))) {
+        return null;
+      }
+      const indexes = await indexingHelper.getIndexes(indexingKey);
+      return await repo.findById(indexes[0]);
     },
 
     async set(entity) {
@@ -163,6 +194,7 @@ export function createRedisRepository<
       if (!(await repo.findById(entity._id))) {
         await addIndex(entity._id);
       }
+
       await redis.hSetObject(entity._id, config.collection, '', {
         ...entity,
         _id: undefined,
@@ -203,6 +235,7 @@ export function createRedisRepository<
   async function init() {
     redis = useRedis();
     indexingHelper = new RedisIndexingHelper(config.collection, redis);
+    repo.indexingHelper = indexingHelper;
     if (config.methods) {
       repo.methods = await config.methods({
         repo,

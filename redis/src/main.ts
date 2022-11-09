@@ -37,6 +37,7 @@ export function createRedis<
 
       redisClient.on('error', (err) => {
         logger.error('', err);
+        next(err);
       });
 
       const repos: {
@@ -89,54 +90,72 @@ export function createRedis<
               for (const schKey in schema) {
                 const objKey = `${baseKey ? baseKey + ':' : ''}${schKey}`;
                 const schItem = schema[schKey];
-                if (schItem.__type === 'object') {
-                  output[schKey] = redis.remakeH(
-                    schItem.__child as ObjectSchema,
-                    obj,
-                    objKey,
-                  );
-                } else if (schItem.__type === 'array') {
-                  output[schKey] = [];
-                  const arrKeys = Object.keys(obj).filter((e) =>
-                    e.startsWith(objKey),
-                  );
-                  const remaked: {
-                    [key: string]: boolean;
-                  } = {};
-                  for (let i = 0; i < arrKeys.length; i++) {
-                    const arrIndex = arrKeys[i]
-                      .replace(objKey + ':', '')
-                      .split(':')[0];
-                    const objArrKey = objKey + ':' + arrIndex;
-                    if (!remaked[objArrKey]) {
-                      remaked[objArrKey] = true;
-                      if (schItem.__child) {
-                        if (schItem.__child.__type === 'object') {
-                          output[schKey].push(
-                            redis.remakeH(
-                              schItem.__child.__content as ObjectSchema,
-                              obj,
-                              objArrKey,
-                            ),
-                          );
-                        } else if (schItem.__child.__type === 'number') {
-                          output[schKey].push(parseFloat(obj[objArrKey]));
-                        } else if (schItem.__child.__type === 'boolean') {
-                          output[schKey].push(
-                            obj[objArrKey] === 'true' ? true : false,
-                          );
-                        } else {
-                          output[schKey].push(obj[objArrKey]);
+                if (obj[objKey] || schItem.__required) {
+                  if (schItem.__type === 'object') {
+                    output[schKey] = redis.remakeH(
+                      schItem.__child as ObjectSchema,
+                      obj,
+                      objKey,
+                    );
+                  } else if (schItem.__type === 'array') {
+                    output[schKey] = [];
+                    const arrKeys = Object.keys(obj).filter((e) =>
+                      e.startsWith(objKey),
+                    );
+                    const remaked: {
+                      [key: string]: boolean;
+                    } = {};
+                    for (let i = 0; i < arrKeys.length; i++) {
+                      const arrIndex = arrKeys[i]
+                        .replace(objKey + ':', '')
+                        .split(':')[0];
+                      const objArrKey = objKey + ':' + arrIndex;
+                      if (!remaked[objArrKey]) {
+                        remaked[objArrKey] = true;
+                        if (schItem.__child) {
+                          if (schItem.__child.__type === 'object') {
+                            output[schKey].push(
+                              redis.remakeH(
+                                schItem.__child.__content as ObjectSchema,
+                                obj,
+                                objArrKey,
+                              ),
+                            );
+                          } else if (schItem.__child.__type === 'number') {
+                            let result = parseFloat(obj[objArrKey]);
+                            if (isNaN(result)) {
+                              result = parseInt(obj[objArrKey]);
+                              if (!isNaN(result)) {
+                                output[schKey].push(result);
+                              }
+                            } else {
+                              output[schKey].push(result);
+                            }
+                          } else if (schItem.__child.__type === 'boolean') {
+                            output[schKey].push(
+                              obj[objArrKey] === 'true' ? true : false,
+                            );
+                          } else {
+                            output[schKey].push(obj[objArrKey]);
+                          }
                         }
                       }
                     }
+                  } else if (schItem.__type === 'number') {
+                    let result = parseFloat(obj[schKey]);
+                    if (isNaN(result)) {
+                      result = parseInt(obj[objKey]);
+                      if (!isNaN(result)) {
+                        output[schKey] = result;
+                      }
+                    } else {
+                      output[schKey] = result;
+                    }
+                  } else if (schItem.__type === 'boolean') {
+                    output[schKey] = obj[objKey] === 'true' ? true : false;
+                  } else {
+                    output[schKey] = obj[objKey];
                   }
-                } else if (schItem.__type === 'number') {
-                  output[schKey] = parseFloat(obj[objKey]);
-                } else if (schItem.__type === 'boolean') {
-                  output[schKey] = obj[objKey] === 'true' ? true : false;
-                } else {
-                  output[schKey] = obj[objKey];
                 }
               }
               return output;

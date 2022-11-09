@@ -6,6 +6,7 @@ import type {
 } from '@becomes/purple-cheetah-mod-redis/types';
 import type { MongoDBRedisEntity } from './entity';
 import type { Logger, ObjectSchema } from '@becomes/purple-cheetah/types';
+import type { MongoDBRedisCacheUtil } from 'src/cache-util';
 
 export interface MongoDBRedisRepositoryConfig<
   Entity extends MongoDBRedisEntity = MongoDBRedisEntity,
@@ -25,6 +26,7 @@ export interface MongoDBRedisRepositoryConfig<
     mongoDBInterface: Model<Entity & Document>;
     logger: Logger;
     redisRepo: RedisRepository<Entity, unknown>;
+    cacheUtil: MongoDBRedisCacheUtil<Entity>;
   }): Methods;
 }
 

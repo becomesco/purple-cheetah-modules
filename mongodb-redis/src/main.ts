@@ -15,6 +15,7 @@ import {
 } from 'mongoose';
 import type { RedisRepository } from '@becomes/purple-cheetah-mod-redis/types';
 import { createRedisRepository } from '@becomes/purple-cheetah-mod-redis';
+import { MongoDBRedisCacheUtil } from './cache-util';
 
 function objectSchemaToMongoDBSchema(oSchema: ObjectSchema): Schema {
   const schema: SchemaDefinitionProperty<undefined> = {};
@@ -93,9 +94,10 @@ export function createMongoDBRedisRepository<
     },
     (repo) => {
       redisRepo = repo;
+      cacheUtil = new MongoDBRedisCacheUtil<Entity>(redisRepo);
     },
   );
-  let findAllLath = false;
+  let cacheUtil: MongoDBRedisCacheUtil<Entity> = null as never;
 
   const self: MongoDBRedisRepository<Entity, Methods> = {
     name: config.name,
@@ -103,13 +105,10 @@ export function createMongoDBRedisRepository<
     methods: {} as never,
 
     async findAll() {
-      if (findAllLath) {
-        return await redisRepo.findAll();
-      }
-      const entities = await intf.find().exec();
-      await redisRepo.setMany(JSON.parse(JSON.stringify(entities)));
-      findAllLath = true;
-      return entities;
+      return await cacheUtil.fromResources(
+        'findAll',
+        async () => await intf.find().exec(),
+      );
     },
 
     async findById(id) {
@@ -146,6 +145,15 @@ export function createMongoDBRedisRepository<
       entity.updatedAt = Date.now();
       const ent = await intf.create(entity);
       if (ent) {
+        const indexingKeys = await redisRepo.indexingHelper.getQueryKeys(
+          'set_sensitive',
+        );
+        for (let i = 0; i < indexingKeys.length; i++) {
+          const key = indexingKeys[i];
+          await redisRepo.indexingHelper.removeQueryKey(key, 'set_sensitive');
+          await redisRepo.indexingHelper.setQueryState(key, false);
+          await redisRepo.indexingHelper.removeAll(key);
+        }
         redisRepo.set(JSON.parse(JSON.stringify(ent)));
       }
       return ent;
@@ -170,6 +178,15 @@ export function createMongoDBRedisRepository<
           entity as UpdateQuery<unknown>,
         )
         .exec();
+      const indexingKeys = await redisRepo.indexingHelper.getQueryKeys(
+        'set_sensitive',
+      );
+      for (let i = 0; i < indexingKeys.length; i++) {
+        const key = indexingKeys[i];
+        await redisRepo.indexingHelper.removeQueryKey(key, 'set_sensitive');
+        await redisRepo.indexingHelper.setQueryState(key, false);
+        await redisRepo.indexingHelper.removeAll(key);
+      }
       await redisRepo.set(JSON.parse(JSON.stringify(entity)));
       return entity;
     },
@@ -189,6 +206,14 @@ export function createMongoDBRedisRepository<
       const ok = result.deletedCount === 1;
       if (ok) {
         await redisRepo.deleteById(id);
+        const indexingKeys = [
+          ...(await redisRepo.indexingHelper.getQueryKeys('set_sensitive')),
+          ...(await redisRepo.indexingHelper.getQueryKeys()),
+        ];
+        for (let i = 0; i < indexingKeys.length; i++) {
+          const key = indexingKeys[i];
+          await redisRepo.indexingHelper.removeId(key, id);
+        }
       }
       return ok;
     },
@@ -202,9 +227,6 @@ export function createMongoDBRedisRepository<
     },
 
     async count() {
-      if (findAllLath) {
-        return await redisRepo.count();
-      }
       return await intf.countDocuments().exec();
     },
   };
@@ -223,6 +245,7 @@ export function createMongoDBRedisRepository<
             name: config.name,
             redisRepo,
             schema: config.schema,
+            cacheUtil,
           });
         }
         if (config.onReady) {
