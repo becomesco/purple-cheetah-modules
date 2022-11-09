@@ -5,6 +5,7 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "scripts": {
+    "example": "nodemon src/_example/main.ts",
     "build:ts": "tsc -p .",
     "bundle": "npm-tool --bundle",
     "publish": "npm-tool --publish",
@@ -40,7 +41,7 @@
     "@banez/npm-tool": "^1.1.1",
     "@becomes/purple-cheetah": "^3.5.3",
     "@becomes/purple-cheetah-mod-mongodb": "^2.0.1",
-    "@becomes/purple-cheetah-mod-redis": "^1.0.0",
+    "@becomes/purple-cheetah-mod-redis": "^1.0.1",
     "@types/chai": "^4.3.3",
     "@types/express": "^4.17.14",
     "@types/mocha": "^10.0.0",
