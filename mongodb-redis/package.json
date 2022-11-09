@@ -1,6 +1,6 @@
 {
   "name": "@becomes/purple-cheetah-mod-mongodb-redis",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Module for the Purple Cheetah which provides MongoDB interface with Redis cache.",
   "main": "./index.js",
   "types": "./index.d.ts",
