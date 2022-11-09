@@ -11,6 +11,7 @@ module.exports = createConfig({
       {
         title: 'Remove tests from output',
         task: async () => {
+          await fs.deleteDir(['dist', 'src', '_example']);
           await fs.copy(['dist', 'src'], 'dist');
           await fs.deleteDir(['dist', 'src']);
           await fs.deleteDir(['dist', 'test']);
