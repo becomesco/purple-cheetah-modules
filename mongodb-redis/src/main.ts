@@ -144,6 +144,7 @@ export function createMongoDBRedisRepository<
       entity.createdAt = Date.now();
       entity.updatedAt = Date.now();
       const ent = await intf.create(entity);
+      await redisRepo.indexingHelper.addIds('findAll', ent._id);
       if (ent) {
         const indexingKeys = await redisRepo.indexingHelper.getQueryKeys(
           'set_sensitive',
