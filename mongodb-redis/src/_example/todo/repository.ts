@@ -27,7 +27,6 @@ export const TodoRepoModules = createMongoDBRedisRepository<
         return cacheUtil.fromResources(
           `search:${crypto.createHash('sha1').update(text).digest('hex')}`,
           async () => {
-            console.log(1)
             return await mongoDBInterface.find({
               description: { $regex: text },
             });
