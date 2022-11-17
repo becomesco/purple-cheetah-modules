@@ -1,6 +1,6 @@
 {
   "name": "@becomes/purple-cheetah-mod-mongodb",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Module for the Purple Cheetah which provides MongoDB interface.",
   "main": "./index.js",
   "types": "./index.d.ts",
