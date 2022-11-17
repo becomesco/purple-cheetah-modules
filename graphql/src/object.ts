@@ -1,4 +1,20 @@
-import type { GraphqlObject, GraphqlObjectConfig } from "./types";
+import type { ObjectSchema } from '@becomes/purple-cheetah/types';
+import { objectSchemaToGraphqlFields } from './main';
+import type { GraphqlObject, GraphqlObjectConfig } from './types';
+
+export function objectSchemaToGraphqlObject(config: {
+  name: string;
+  schema: ObjectSchema;
+  type?: string;
+  description?: string;
+}): GraphqlObject {
+  return createGraphqlObject({
+    name: config.name,
+    type: config.type,
+    description: config.description,
+    fields: objectSchemaToGraphqlFields(config.schema),
+  });
+}
 
 export function createGraphqlResponseObject(config: {
   name: string;

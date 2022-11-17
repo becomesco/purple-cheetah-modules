@@ -17,7 +17,7 @@ import type { RedisRepository } from '@becomes/purple-cheetah-mod-redis/types';
 import { createRedisRepository } from '@becomes/purple-cheetah-mod-redis';
 import { MongoDBRedisCacheUtil } from './cache-util';
 
-function objectSchemaToMongoDBSchema(oSchema: ObjectSchema): Schema {
+export function objectSchemaToMongoDBSchema(oSchema: ObjectSchema): Schema {
   const schema: SchemaDefinitionProperty<undefined> = {};
   for (const osKey in oSchema) {
     const osItem = oSchema[osKey];
