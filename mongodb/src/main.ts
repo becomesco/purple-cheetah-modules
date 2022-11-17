@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { useLogger } from '@becomes/purple-cheetah';
-import type { Module } from '@becomes/purple-cheetah/types';
+import type { Module, ObjectSchema } from '@becomes/purple-cheetah/types';
 import type { MongoDB, MongoDBConfig } from './types';
 
 let connected = false;
@@ -9,6 +9,65 @@ const mongoDB: MongoDB = {
     return connected;
   },
 };
+
+export function objectSchemaToMongoDBSchema(oSchema: ObjectSchema): mongoose.Schema {
+  const schema: mongoose.SchemaDefinitionProperty<undefined> = {};
+  for (const osKey in oSchema) {
+    const osItem = oSchema[osKey];
+    if (osItem.__type === 'string') {
+      schema[osKey] = {
+        type: String,
+        required: osItem.__required,
+      };
+    } else if (osItem.__type === 'number') {
+      schema[osKey] = {
+        type: Number,
+        required: osItem.__required,
+      };
+    } else if (osItem.__type === 'boolean') {
+      schema[osKey] = {
+        type: Boolean,
+        required: osItem.__required,
+      };
+    } else if (osItem.__type === 'object') {
+      if (osItem.__child) {
+        schema[osKey] = {
+          type: objectSchemaToMongoDBSchema(osItem.__child as ObjectSchema),
+          required: osItem.__required,
+        };
+      }
+    } else if (osItem.__type === 'array') {
+      if (osItem.__child) {
+        if (osItem.__child.__type === 'string') {
+          schema[osKey] = {
+            type: [String],
+            required: osItem.__required,
+          };
+        } else if (osItem.__child.__type === 'number') {
+          schema[osKey] = {
+            type: [Number],
+            required: osItem.__required,
+          };
+        } else if (osItem.__child.__type === 'boolean') {
+          schema[osKey] = {
+            type: [Boolean],
+            required: osItem.__required,
+          };
+        } else if (osItem.__child.__type === 'object') {
+          schema[osKey] = {
+            type: [
+              objectSchemaToMongoDBSchema(
+                osItem.__child.__content as ObjectSchema,
+              ),
+            ],
+            required: osItem.__required,
+          };
+        }
+      }
+    }
+  }
+  return new mongoose.Schema(schema);
+}
 
 export function useMongoDB(): MongoDB {
   return mongoDB;
