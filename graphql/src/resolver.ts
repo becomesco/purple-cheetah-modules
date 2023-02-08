@@ -42,12 +42,15 @@ export function createGraphqlResolver<SetupResult, DataType, ReturnType>(
             }
           }
           const result = await config.resolve({
-            ...data,
+            // FIXME: try to think of better implementation.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ...(data as any),
             ...setupResult,
             logger: self.logger,
             errorHandler: self.errorHandler,
             resolverName: config.name,
-          } as never);
+            collectionName,
+          });
           if (result instanceof Array) {
             if (typeof config.unionTypeResolve === 'function') {
               return {

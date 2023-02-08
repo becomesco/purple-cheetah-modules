@@ -1,10 +1,10 @@
-import type { MongoDBEntity } from './entity';
 import type { Schema, Model, Document } from 'mongoose';
 import type {
   MemCacheHandler,
   MemCacheHandlerMethodsFunction,
 } from '@becomes/purple-cheetah-mod-mem-cache/types';
 import type { Logger } from '@becomes/purple-cheetah/types';
+import type { MongoDBEntity } from '@becomes/purple-cheetah-mod-mongodb/types';
 
 /**
  * Configuration object for cached MongoDB repository.
@@ -73,6 +73,7 @@ export interface MongoDBCachedRepository<
   Entity extends MongoDBEntity,
   Methods,
 > {
+  collection: string;
   /**
    * Custom repository methods.
    */

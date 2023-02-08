@@ -2,9 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
+    "declarationMap": false,
+    "sourceMap": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strict": true,
@@ -13,17 +12,10 @@
     "baseUrl": "./",
     "skipLibCheck": true,
     "incremental": true,
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "public"],
-  "typedocOptions": {
-    "entryPoints": ["src"],
-    "name": "Purple Cheetah | MongoDB",
-    "theme": "./node_modules/typedoc-neo-theme/bin/default",
-    "out": "doc",
-    "outline": [
-      {}
-    ]
-  }
+  "include": ["src", "test"],
+  "exclude": ["node_modules", "dist", "public"]
 }

@@ -19,6 +19,7 @@ export function createMongoDBRepository<Entity extends MongoDBEntity, Methods>({
 
   const intf = model<Entity & Document>(collection, schema);
   const self: MongoDBRepository<Entity, Methods> = {
+    collection,
     methods: undefined as never,
     async findBy(query) {
       return intf.findOne(query).exec();
@@ -37,26 +38,30 @@ export function createMongoDBRepository<Entity extends MongoDBEntity, Methods>({
         .find({ _id: { $in: ids } } as FilterQuery<unknown>)
         .exec();
     },
-    async add(entity) {
+    async add(entity, manualCU) {
       if (!entity._id || !Types.ObjectId.isValid(entity._id)) {
         entity._id = new Types.ObjectId();
       }
-      entity.createdAt = Date.now();
-      entity.updatedAt = Date.now();
+      if (!manualCU) {
+        entity.createdAt = Date.now();
+        entity.updatedAt = Date.now();
+      }
       return await intf.create(entity);
     },
-    async addMany(entities) {
+    async addMany(entities, manualCU) {
       const output: Entity[] = [];
       for (let i = 0; i < entities.length; i++) {
-        output.push(await self.add(entities[i]));
+        output.push(await self.add(entities[i], manualCU));
       }
       return output;
     },
-    async update(entity) {
+    async update(entity, manualCU) {
       if (!Types.ObjectId.isValid(entity._id)) {
         throw Error('Invalid ID');
       }
-      entity.updatedAt = Date.now();
+      if (!manualCU) {
+        entity.updatedAt = Date.now();
+      }
       await intf
         .updateOne(
           { _id: entity._id } as FilterQuery<unknown>,
@@ -65,10 +70,10 @@ export function createMongoDBRepository<Entity extends MongoDBEntity, Methods>({
         .exec();
       return entity;
     },
-    async updateMany(entities) {
+    async updateMany(entities, manualCU) {
       const output: Entity[] = [];
       for (let i = 0; i < entities.length; i++) {
-        output.push(await self.update(entities[i]));
+        output.push(await self.update(entities[i], manualCU));
       }
       return output;
     },

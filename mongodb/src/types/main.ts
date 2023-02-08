@@ -11,7 +11,7 @@ export interface MongoDBConfig {
    * Configuration for self hosted MongoDB database.
    */
   selfHosted?: {
-    user: {
+    user?: {
       name: string;
       password: string;
     };

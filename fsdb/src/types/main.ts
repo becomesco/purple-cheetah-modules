@@ -59,4 +59,8 @@ export interface FSDBConfig {
    * Default: 10000
    */
   saveInterval?: number;
+  /**
+   * Save JSON files a user readable.
+   */
+  prettyOutput?: boolean;
 }

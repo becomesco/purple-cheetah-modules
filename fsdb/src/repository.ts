@@ -57,8 +57,12 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
     }
     return output;
   }
+  function getAllEntitiesRaw(): FSDBCacheCollection<T> {
+    return fsdb.get();
+  }
 
   const self: FSDBRepository<T, K> = {
+    collection,
     methods: undefined as never,
     async findBy(query) {
       const entities = getAllEntities();
@@ -83,10 +87,22 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
       return getAllEntities();
     },
     async findById(id) {
-      return self.findBy((e) => e._id === id);
+      const entries = getAllEntitiesRaw();
+      if (entries[id]) {
+        return entries[id];
+      }
+      return null;
     },
     async findAllById(ids) {
-      return self.findAllBy((e) => ids.includes(e._id));
+      const output: T[] = [];
+      const entries = getAllEntitiesRaw();
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        if (entries[id]) {
+          output.push(entries[id]);
+        }
+      }
+      return output;
     },
     async add(entity) {
       if (!entity._id) {
@@ -165,10 +181,22 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
       return output;
     },
     async deleteById(id: string) {
-      return self.deleteOne((e) => e._id === id);
+      const entries = getAllEntitiesRaw();
+      if (entries[id]) {
+        fsdb.remove(id);
+        return true;
+      }
+      return false;
     },
     async deleteAllById(ids) {
-      return self.deleteMany((e) => ids.includes(e._id));
+      const entries = getAllEntitiesRaw();
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        if (entries[id]) {
+          fsdb.remove(id);
+        }
+      }
+      return true;
     },
     async deleteOne(query) {
       const entities = getAllEntities();
@@ -200,6 +228,8 @@ export function createFSDBRepository<T extends FSDBEntity, K>({
       schema,
       repo: self,
       logger,
+      checkSchema,
+      throwError,
     });
   }
   useFSDB().repo.create(collection, self);

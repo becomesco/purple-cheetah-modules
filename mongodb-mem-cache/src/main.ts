@@ -2,10 +2,10 @@ import { model, Document, FilterQuery, Types, UpdateQuery } from 'mongoose';
 import type {
   MongoDBCachedRepository,
   MongoDBCachedRepositoryConfig,
-  MongoDBEntity,
 } from './types';
 import { useLogger } from '@becomes/purple-cheetah';
 import { createMemCacheHandler } from '@becomes/purple-cheetah-mod-mem-cache';
+import type { MongoDBEntity } from '@becomes/purple-cheetah-mod-mongodb/types';
 
 export function createMongoDBCachedRepository<
   Entity extends MongoDBEntity,
@@ -32,6 +32,7 @@ export function createMongoDBCachedRepository<
 
   const intf = model<Entity & Document>(collection, schema);
   const self: MongoDBCachedRepository<Entity, Methods> = {
+    collection,
     methods: undefined as never,
     async findAll() {
       if (findAllLath) {

@@ -1,15 +1,61 @@
 import { buildSchema } from 'graphql';
 import { graphqlHTTP } from 'express-graphql';
-import type { Module } from '@becomes/purple-cheetah/types';
+import type { Module, ObjectSchema } from '@becomes/purple-cheetah/types';
 import { createMiddleware } from '@becomes/purple-cheetah';
 import { useGraphqlResponsePrimitives } from './response';
 import {
   GraphqlArgs,
   GraphqlConfig,
+  GraphqlFields,
   GraphqlObject,
   GraphqlResolverFunction,
   GraphqlResolverType,
 } from './types';
+
+function objectSchemaTypeToGraphqlType(type?: any): string {
+  switch (type) {
+    case 'string': {
+      return 'String';
+    }
+    case 'number': {
+      return 'Float';
+    }
+    case 'boolean': {
+      return 'Boolean';
+    }
+    default: {
+      return 'none';
+    }
+  }
+}
+
+export function objectSchemaToGraphqlFields(
+  schema: ObjectSchema,
+): GraphqlFields {
+  const fields: GraphqlFields = {};
+  for (const key in schema) {
+    const prop = schema[key];
+    if (prop.__type === 'object') {
+      fields[key] = `${prop.__name}${prop.__required ? '!' : ''}`;
+    } else if (prop.__type === 'array') {
+      if (prop.__child) {
+        const child = prop.__child;
+        if (child.__type === 'object') {
+          fields[key] = `[${prop.__name}!]${prop.__required ? '!' : ''}`;
+        } else {
+          fields[key] = `[${objectSchemaTypeToGraphqlType(child.__type)}!]${
+            prop.__required ? '!' : ''
+          }`;
+        }
+      }
+    } else {
+      fields[key] = `${objectSchemaTypeToGraphqlType(prop.__type)}${
+        prop.__required ? '!' : ''
+      }`;
+    }
+  }
+  return fields;
+}
 
 export function createGraphql(config: GraphqlConfig): Module {
   const collections = config.collections;
