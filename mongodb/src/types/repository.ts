@@ -87,23 +87,23 @@ export interface MongoDBRepository<Entity extends MongoDBEntity, Methods> {
    * automatically created. `createdAt` and `updatedAt` properties will be
    * overwritten.
    */
-  add(entity: Entity): Promise<Entity>;
+  add(entity: Entity, manualCU?: boolean): Promise<Entity>;
   /**
    * Add many new entities to the database. If ID is not available in entity,
    * it will be automatically created. `createdAt` and `updatedAt` properties
    * will be overwritten.
    */
-  addMany(entities: Entity[]): Promise<Entity[]>;
+  addMany(entities: Entity[], manualCU?: boolean): Promise<Entity[]>;
   /**
    * Update existing entity in the database. `createdAt` and `updatedAt`
    * properties will be overwritten.
    */
-  update(entity: Entity): Promise<Entity>;
+  update(entity: Entity, manualCU?: boolean): Promise<Entity>;
   /**
    * Update existing entities in the database. `createdAt` and `updatedAt`
    * properties will be overwritten.
    */
-  updateMany(entities: Entity[]): Promise<Entity[]>;
+  updateMany(entities: Entity[], manualCU?: boolean): Promise<Entity[]>;
   /**
    * Delete an entity with the specified ID.
    */
