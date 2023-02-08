@@ -10,7 +10,9 @@ const mongoDB: MongoDB = {
   },
 };
 
-export function objectSchemaToMongoDBSchema(oSchema: ObjectSchema): mongoose.Schema {
+export function objectSchemaToMongoDBSchema(
+  oSchema: ObjectSchema,
+): mongoose.Schema {
   const schema: mongoose.SchemaDefinitionProperty<undefined> = {};
   for (const osKey in oSchema) {
     const osItem = oSchema[osKey];
@@ -74,6 +76,10 @@ export function useMongoDB(): MongoDB {
 }
 export function createMongoDB(config: MongoDBConfig): Module {
   const logger = useLogger({ name: 'MongoDB' });
+  mongoose.set(
+    'strictQuery',
+    typeof config.strictQuery === 'boolean' ? config.strictQuery : false,
+  );
 
   async function openConnection(): Promise<void | Error> {
     if (mongoose.connection.readyState === 0) {

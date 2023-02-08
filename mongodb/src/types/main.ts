@@ -2,6 +2,7 @@
  * MongoDB configuration object.
  */
 export interface MongoDBConfig {
+  strictQuery?: boolean;
   /**
    * Method which will be called when handler is successfully
    * connected to the MongoDB database.
